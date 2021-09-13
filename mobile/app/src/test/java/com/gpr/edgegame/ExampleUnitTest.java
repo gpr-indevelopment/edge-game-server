@@ -1,4 +1,4 @@
-package com.gpr.edgegame;
+package com.gpr.edgegameserver;
 
 import org.junit.Test;
 

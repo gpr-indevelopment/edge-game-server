@@ -5,8 +5,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>lwjgl</module>
-		<module>upnp</module>
-        <module>webrtc</module>
         <module>cling</module>
     </modules>
     <parent>

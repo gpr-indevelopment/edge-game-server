@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-package com.gpr.edgegame;
+package com.gpr.edgegameserver;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
