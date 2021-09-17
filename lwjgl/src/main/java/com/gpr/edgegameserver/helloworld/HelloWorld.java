@@ -1,4 +1,4 @@
-package com.gpr.edgegameserver;
+package com.gpr.edgegameserver.helloworld;
 
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
