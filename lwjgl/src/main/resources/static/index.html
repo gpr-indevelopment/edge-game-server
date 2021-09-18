@@ -1,0 +1,52 @@
+<html>
+<head>
+  <title>Chat WebSocket</title>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <script src="stomp.min.js"></script>
+  <script type="text/javascript">
+    var stompClient = null;
+
+    function setupEventListeners() {
+      document.addEventListener ('keydown', (event) => sendKeyDown(event.code));
+      document.addEventListener ('keyup', (event) => sendKeyUp(event.code));
+    }
+
+    async function connect() {
+      var socket = new SockJS('/edge-game');
+      stompClient = Stomp.over(socket);
+      await stompClient.connect({}, function(frame) {
+        console.log('Connected: ' + frame);
+      });
+    }
+
+    async function reconnect() {
+      setupEventListeners();
+      disconnect();
+      await connect();
+    }
+
+    function disconnect() {
+      if(stompClient != null) {
+        stompClient.disconnect();
+      }
+      console.log("Disconnected");
+    }
+
+    function sendKeyDown(keyCode) {
+      stompClient.send("/game/key-down", {},
+              JSON.stringify({'keyCommand':keyCode}));
+    }
+
+    function sendKeyUp(keyCode) {
+      stompClient.send("/game/key-up", {},
+              JSON.stringify({'keyCommand':keyCode}));
+    }
+  </script>
+</head>
+<body onload="reconnect()">
+<div>
+  <h2>Edge Game!</h2>
+</div>
+
+</body>
+</html>

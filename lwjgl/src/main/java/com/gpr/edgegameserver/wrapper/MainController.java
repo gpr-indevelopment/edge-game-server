@@ -1,4 +1,4 @@
-package com.gpr.edgegameserver;
+package com.gpr.edgegameserver.wrapper;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

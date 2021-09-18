@@ -794,7 +794,7 @@ public class VoxelGameGL implements Runnable {
     private int numChunksInFrustum;
     private int fbo, colorRbo, depthRbo;
 
-    private final boolean[] keydown = new boolean[GLFW_KEY_LAST + 1];
+    protected final boolean[] keydown = new boolean[GLFW_KEY_LAST + 1];
     private int mouseX, mouseY;
     private final Vector3f tmpv3f = new Vector3f();
     private final Vector4f tmpv4f = new Vector4f();
