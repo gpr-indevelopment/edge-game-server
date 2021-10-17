@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.Runtime;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
@@ -3298,6 +3299,13 @@ public class VoxelGameGL implements Runnable {
              */
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
             glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+            ByteBuffer bb = org.lwjgl.system.MemoryUtil.memAlloc(width * height * 4);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+            glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, bb);
+            // Test with stb_image to write as jpeg:
+            org.lwjgl.stb.STBImageWrite.stbi_flip_vertically_on_write(true);
+            org.lwjgl.stb.STBImageWrite.stbi_write_jpg("frame.jpg", width, height, 4, bb, 50);
+            org.lwjgl.system.MemoryUtil.memFree(bb);
             glfwSwapBuffers(window);
         }
         executorService.shutdown();
