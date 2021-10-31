@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -75,7 +76,13 @@ public class VoxelGameGL implements Runnable {
     private static final NumberFormat INT_FORMATTER = NumberFormat.getIntegerInstance();
     private static final NumberFormat PERCENT_FORMATTER = NumberFormat.getPercentInstance();
     private static final Logger logger = LoggerFactory.getLogger(VoxelGameGL.class);
+    private static VideoEncoder videoEncoder;
     static {
+        try {
+            videoEncoder = new VideoEncoder();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (DEBUG) {
             /* When we are in debug mode, enable all LWJGL debug flags */
             System.setProperty("org.lwjgl.util.Debug", "true");
@@ -3299,15 +3306,16 @@ public class VoxelGameGL implements Runnable {
              */
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
             glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-            ByteBuffer bb = org.lwjgl.system.MemoryUtil.memAlloc(width * height * 4);
-            glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-            glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, bb);
-            // Test with stb_image to write as jpeg:
-            org.lwjgl.stb.STBImageWrite.stbi_flip_vertically_on_write(true);
-            org.lwjgl.stb.STBImageWrite.stbi_write_jpg("frame.jpg", width, height, 4, bb, 50);
-            org.lwjgl.system.MemoryUtil.memFree(bb);
+            /* Código para salvar no bytebuffer
+             ByteBuffer bb = org.lwjgl.system.MemoryUtil.memAlloc(width * height * 4);
+             glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+             glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, bb);
+             videoEncoder.encodeJpg(bb, width, height);
+             org.lwjgl.system.MemoryUtil.memFree(bb);
+             */
             glfwSwapBuffers(window);
         }
+        videoEncoder.finish();
         executorService.shutdown();
         try {
             if (!executorService.awaitTermination(2000L, TimeUnit.MILLISECONDS))

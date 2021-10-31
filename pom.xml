@@ -6,7 +6,9 @@
     <modules>
         <module>lwjgl</module>
         <module>cling</module>
-    </modules>
+		<module>video-streamer</module>
+		<module>web</module>
+	</modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -15,10 +17,30 @@
 	</parent>
 	<groupId>com.gpr</groupId>
 	<artifactId>edge-game-server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${revision}${changelist}</version>
 	<name>edge-game-server</name>
 	<description>Demo project for edge game server</description>
 	<properties>
 		<java.version>11</java.version>
+		<kurento.version>6.15.0</kurento.version>
 	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.kurento</groupId>
+				<artifactId>kurento-client</artifactId>
+				<version>6.15.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.gpr</groupId>
+				<artifactId>video-streamer</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.bramp.ffmpeg</groupId>
+				<artifactId>ffmpeg</artifactId>
+				<version>0.6.2</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
