@@ -25,6 +25,9 @@ public class StreamRegistry {
     }
 
     public void removeStream(String identifier) {
-        idToStream.remove(identifier);
+        Process removedStream = idToStream.remove(identifier);
+        if (removedStream != null) {
+            removedStream.destroy();
+        }
     }
 }

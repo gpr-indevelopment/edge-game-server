@@ -6,9 +6,12 @@ public class KmsStreamingInfo {
 
     private final Integer audioPort;
 
-    public KmsStreamingInfo(Integer videoPort, Integer audioPort) {
+    private final String kmsSdpAnswer;
+
+    public KmsStreamingInfo(Integer videoPort, Integer audioPort, String kmsSdpAnswer) {
         this.videoPort = videoPort;
         this.audioPort = audioPort;
+        this.kmsSdpAnswer = kmsSdpAnswer;
     }
 
     public Integer getVideoPort() {
@@ -17,5 +20,9 @@ public class KmsStreamingInfo {
 
     public Integer getAudioPort() {
         return audioPort;
+    }
+
+    public String getKmsSdpAnswer() {
+        return kmsSdpAnswer;
     }
 }

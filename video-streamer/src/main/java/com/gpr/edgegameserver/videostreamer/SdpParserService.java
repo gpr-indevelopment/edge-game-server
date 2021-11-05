@@ -29,6 +29,6 @@ public class SdpParserService {
     }
 
     public KmsStreamingInfo getStreamingInfo(String kmsSdp) {
-        return new KmsStreamingInfo(getKmsVideoPort(kmsSdp), getKmsAudioPort(kmsSdp));
+        return new KmsStreamingInfo(getKmsVideoPort(kmsSdp), getKmsAudioPort(kmsSdp), kmsSdp);
     }
 }

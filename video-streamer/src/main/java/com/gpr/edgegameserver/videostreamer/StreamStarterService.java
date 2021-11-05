@@ -27,25 +27,28 @@ public class StreamStarterService {
         this.streamRegistry = streamRegistry;
     }
 
-    public String startStream() {
-        return startStreamThread(retrieveKmsStreamingInfo());
-    }
-
-    private KmsStreamingInfo retrieveKmsStreamingInfo() {
-        logger.info("Starting fake stream to get SDP info from ffmpeg.");
-        Process ffmpegProcess = startFfmpegStream(getSdpFile(), SocketUtils.findAvailableUdpPort());
-        KmsStreamingInfo kmsStreamingInfo = kmsConnectionService.connectKms(getSdpFile());
-        ffmpegProcess.destroy();
-        return kmsStreamingInfo;
-    }
-
-    private String startStreamThread(KmsStreamingInfo kmsStreamingInfo) {
+    public StreamStartResponseDTO startStream(String clientSdpOffer) {
+        KmsStreamingInfo webRtcKmsStreamingInfo = kmsConnectionService.connectWebRtc(clientSdpOffer);
+        KmsStreamingInfo rtpKmsStreamingInfo = retrieveRtpKmsStreamingInfo();
         String streamId = UUID.randomUUID().toString();
         logger.info("Starting managed ffmpeg stream.");
-        Process process = startFfmpegStream(getSdpFile(), kmsStreamingInfo.getVideoPort());
+        Process process = startFfmpegStream(getSdpFile(), rtpKmsStreamingInfo.getVideoPort());
         streamRegistry.addStream(streamId, process);
         logger.info("Stream created successfully with identifier: {}.", streamId);
-        return streamId;
+        return new StreamStartResponseDTO(streamId, webRtcKmsStreamingInfo.getKmsSdpAnswer());
+    }
+
+    public void stopStream(String id) {
+        logger.info("Stopping stream with ID: {}.", id);
+        streamRegistry.removeStream(id);
+    }
+
+    private KmsStreamingInfo retrieveRtpKmsStreamingInfo() {
+        logger.info("Starting fake stream to get SDP info from ffmpeg.");
+        Process ffmpegProcess = startFfmpegStream(getSdpFile(), SocketUtils.findAvailableUdpPort());
+        KmsStreamingInfo kmsStreamingInfo = kmsConnectionService.connectRtp(getSdpFile());
+        ffmpegProcess.destroy();
+        return kmsStreamingInfo;
     }
 
     private Process startFfmpegStream(File outputSdpFile, Integer videoStreamPort) {

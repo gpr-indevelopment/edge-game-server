@@ -21,14 +21,14 @@ public class FfmpegStartCommand {
         fullCommand.add("ffmpeg");
         fullCommand.add("-video_size");
         fullCommand.add("1366x768");
-        fullCommand.add("-framerate");
-        fullCommand.add("25");
         fullCommand.add("-f");
         fullCommand.add("x11grab");
         fullCommand.add("-i");
         fullCommand.add(":0.0");
         fullCommand.add("-c:v");
         fullCommand.add("libx264");
+        fullCommand.add("-preset");
+        fullCommand.add("ultrafast");
         fullCommand.add("-sdp_file");
         fullCommand.add(this.sdpFilePath);
         fullCommand.add("-f");
