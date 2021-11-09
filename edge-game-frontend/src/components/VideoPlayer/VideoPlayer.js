@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./VideoPlayer.module.css";
-import { Button, Spin } from "antd";
+import { Button } from "antd";
 import backendServer from "./backendServer";
-import kurentoConnector from "./kurentoConnector";
 
 function VideoPlayer() {
 
   return (
     <div className={styles.container}>
-        <video id={"videoRtp"} width="640px" height="480px"/>
+        <video id={"videoRtp"} width="640px" height="480px" onLoadedMetadata={(e ) => console.log(e)}/>
         <div className={styles.buttonContainer}>
           <Button
             type="primary"
@@ -30,11 +29,7 @@ function VideoPlayer() {
               }
             });
           }}>Start video</Button>
-          <Button type="danger" onClick={() => {
-            // setLoading(true);
-            // console.log("Stopping stream with ID: ", streamId);
-            // backendServer.stopStream(streamId).finally(() => setLoading(false));
-          }}>Pause</Button>
+          <Button type="danger" onClick={backendServer.sendInputLag}>Test InputLag</Button>
         </div>
       </div>
   );

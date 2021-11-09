@@ -1,11 +1,8 @@
 package com.gpr.edgegameserver.videostreamer;
 
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class StreamRegistry {
     
     private final Map<String, Process> idToStream = new HashMap<>();

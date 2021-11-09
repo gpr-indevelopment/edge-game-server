@@ -1,5 +1,4 @@
 import kurentoUtils from "kurento-utils";
-import { config } from "../../constants";
 import backendWebsocket from "./backendWebsocket";
 
 const postIceCandidate = (candidate) => {

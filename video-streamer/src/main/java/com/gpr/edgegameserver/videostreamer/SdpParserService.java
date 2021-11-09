@@ -1,11 +1,8 @@
 package com.gpr.edgegameserver.videostreamer;
 
-import org.springframework.stereotype.Service;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Service
 public class SdpParserService {
 
     public Integer getKmsVideoPort(String kmsSdp) {

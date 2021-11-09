@@ -2,6 +2,7 @@ package com.gpr.edgegameserver.web.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.gpr.edgegameserver.videostreamer.InputLagService;
 import com.gpr.edgegameserver.videostreamer.KmsConnectionService;
 import org.kurento.client.IceCandidate;
 import org.slf4j.Logger;
@@ -15,8 +16,14 @@ public class WebSocketController {
 
     private static final Logger logger = LoggerFactory.getLogger(WebSocketController.class);
 
-    @Autowired
-    private KmsConnectionService kmsConnectionService;
+    private final KmsConnectionService kmsConnectionService;
+
+    private final InputLagService inputLagService;
+
+    public WebSocketController(KmsConnectionService kmsConnectionService, InputLagService inputLagService) {
+        this.kmsConnectionService = kmsConnectionService;
+        this.inputLagService = inputLagService;
+    }
 
     private final Gson gson = new Gson();
 
@@ -25,11 +32,15 @@ public class WebSocketController {
         kmsConnectionService.addWebRtcIceCandidate(buildIceCandidate(message));
     }
 
+    @MessageMapping("/inputLag")
+    public void saveInputLag(long sentTimestamp) {
+        inputLagService.saveInputLag(sentTimestamp);
+    }
+
     private IceCandidate buildIceCandidate(String message) {
         JsonObject jsonMessage = gson.fromJson(message, JsonObject.class);
-        JsonObject jsonCandidate = jsonMessage.get("candidate").getAsJsonObject();
-        return new IceCandidate(jsonCandidate.get("candidate").getAsString(),
-                        jsonCandidate.get("sdpMid").getAsString(),
-                        jsonCandidate.get("sdpMLineIndex").getAsInt());
+        return new IceCandidate(jsonMessage.get("candidate").getAsString(),
+                jsonMessage.get("sdpMid").getAsString(),
+                jsonMessage.get("sdpMLineIndex").getAsInt());
     }
 }

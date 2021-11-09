@@ -1,5 +1,6 @@
 import { config } from "../../constants";
 import kurentoConnector from "./kurentoConnector";
+import backendWebsocket from "./backendWebsocket";
 
 const processSdpAnswer = (webRtcPeer, answer) => {
     webRtcPeer.processAnswer(answer.kmsSdpAnswer, (err) => {
@@ -26,15 +27,20 @@ const processSdpOffer = (webRtcPeer) => {
       });
 }
 
+let startStream = (videoElement) => {
+  let webRtcPeer = kurentoConnector.init(videoElement);
+  processSdpOffer(webRtcPeer);
+}
+
+let stopStream = (streamId) => {
+  return fetch(`${config.url}/${streamId}/stop-stream`, {
+    method: "POST",
+  });
+}
+
 const backendServer = {
-  startStream: (videoElement) => {
-    let webRtcPeer = kurentoConnector.init(videoElement);
-    processSdpOffer(webRtcPeer);
-  },
-  stopStream: (streamId) => {
-    return fetch(`${config.url}/${streamId}/stop-stream`, {
-      method: "POST",
-    });
-  },
+  startStream: (videoElement) => startStream(videoElement),
+  stopStream: (streamId) => stopStream(streamId),
+  sendInputLag: () => backendWebsocket.sendInputLag()
 };
 export default backendServer;

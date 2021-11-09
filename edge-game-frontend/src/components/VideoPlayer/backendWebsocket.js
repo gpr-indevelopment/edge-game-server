@@ -12,6 +12,9 @@ let functions = {
     },
     addTopicListener: (listener) => {
         stompClient.subscribe('/topic/message', (message) => listener(message));
+    },
+    sendInputLag: () => {
+        stompClient.send("/server/inputLag", {}, new Date().getTime());
     }
 };
 
