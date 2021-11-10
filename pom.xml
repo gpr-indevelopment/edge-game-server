@@ -8,7 +8,8 @@
         <module>cling</module>
 		<module>video-streamer</module>
 		<module>web</module>
-	</modules>
+        <module>gstreamer-webrtc-server</module>
+    </modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -26,6 +27,11 @@
 	</properties>
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.freedesktop.gstreamer</groupId>
+				<artifactId>gst1-java-core</artifactId>
+				<version>0.9.4</version>
+			</dependency>
 			<dependency>
 				<groupId>org.kurento</groupId>
 				<artifactId>kurento-client</artifactId>
