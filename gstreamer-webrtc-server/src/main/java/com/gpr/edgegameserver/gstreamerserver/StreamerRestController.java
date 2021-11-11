@@ -1,7 +1,5 @@
 package com.gpr.edgegameserver.gstreamerserver;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,15 +14,13 @@ import java.util.Map;
 @CrossOrigin("*")
 public class StreamerRestController {
 
-    Logger logger = LoggerFactory.getLogger(StreamerRestController.class);
-
     private final MediaPipelineFactory mediaPipelineFactory;
 
-    private final InputLagRepository inputLagRepository;
+    private final InputLagService inputLagService;
 
-    public StreamerRestController(MediaPipelineFactory mediaPipelineFactory, InputLagRepository inputLagRepository) {
+    public StreamerRestController(MediaPipelineFactory mediaPipelineFactory, InputLagService inputLagService) {
         this.mediaPipelineFactory = mediaPipelineFactory;
-        this.inputLagRepository = inputLagRepository;
+        this.inputLagService = inputLagService;
     }
 
     @PostMapping("/{peerId}")
@@ -34,7 +30,6 @@ public class StreamerRestController {
 
     @PostMapping("/input-lag")
     public void registerInputLag(@RequestBody Map<String, Object> payload) {
-        InputLagEntity savedEntity = inputLagRepository.save(new InputLagEntity((Long) payload.get("sentTimestamp"), System.currentTimeMillis()));
-        logger.info("Registered InputLag with delta: {} ms", savedEntity.getDelta());
+        inputLagService.register((Long) payload.get("sentTimestamp"));
     }
 }
