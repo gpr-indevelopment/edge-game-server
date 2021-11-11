@@ -19,6 +19,16 @@
     <script src="webrtc.js"></script>
     <script>
       window.onload = websocketServerConnect;
+      setInterval(function() {
+        fetch("/stream/input-lag", {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ sentTimestamp: new Date().getTime()})
+        })
+      }, 2000);
     </script>
   </head>
 
