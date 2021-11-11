@@ -26,7 +26,7 @@ var ws_conn;
 var local_stream_promise;
 
 function setConnectButtonState(value) {
-    document.getElementById("peer-connect-button").value = value;
+
 }
 
 function wantRemoteOfferer() {
@@ -209,20 +209,9 @@ function onServerError(event) {
 }
 
 function getLocalStream() {
-    var constraints;
-    var textarea = document.getElementById('constraints');
-    try {
-        constraints = JSON.parse(textarea.value);
-    } catch (e) {
-        console.error(e);
-        setError('ERROR parsing constraints: ' + e.message + ', using default constraints');
-        constraints = default_constraints;
-    }
-    console.log(JSON.stringify(constraints));
-
     // Add local stream
     if (navigator.mediaDevices.getUserMedia) {
-        return navigator.mediaDevices.getUserMedia(constraints);
+        return navigator.mediaDevices.getUserMedia({"video":false,"audio":true});
     } else {
         errorUserMediaHandler();
     }
@@ -238,10 +227,6 @@ function websocketServerConnect() {
     var span = document.getElementById("status");
     span.classList.remove('error');
     span.textContent = '';
-    // Populate constraints
-    var textarea = document.getElementById('constraints');
-    if (textarea.value == '')
-        textarea.value = JSON.stringify(default_constraints);
     // Fetch the peer id to use
     peer_id = default_peer_id || getOurId();
     ws_port = ws_port || '8443';
