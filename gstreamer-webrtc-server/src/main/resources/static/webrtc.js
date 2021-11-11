@@ -255,7 +255,8 @@ function websocketServerConnect() {
 function onRemoteTrack(event) {
     if (getVideoElement().srcObject !== event.streams[0]) {
         console.log('Incoming stream');
-        getVideoElement().srcObject = event.streams[0];
+        let video = getVideoElement();
+        video.srcObject = event.streams[0];
     }
 }
 

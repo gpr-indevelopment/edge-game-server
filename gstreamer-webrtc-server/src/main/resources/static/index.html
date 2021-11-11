@@ -14,6 +14,17 @@
     <meta charset="utf-8"/>
     <style>
       .error { color: red; }
+
+      #stream {
+        max-width: 100vw;
+        max-height: 100vh;
+      }
+
+      #stream-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     </style>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="webrtc.js"></script>
@@ -33,7 +44,7 @@
   </head>
 
   <body>
-    <div><video id="stream" autoplay playsinline>Your browser doesn't support video</video></div>
+    <div id="stream-container"><video id="stream" autoplay playsinline>Your browser doesn't support video</video></div>
     <div>Status: <span id="status">unknown</span></div>
 <!--    <div><textarea id="text" cols=40 rows=4></textarea></div>-->
     <br/>
