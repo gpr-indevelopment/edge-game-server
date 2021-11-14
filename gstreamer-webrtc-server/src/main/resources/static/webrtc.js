@@ -15,8 +15,6 @@ var default_peer_id;
 // Override with your own STUN servers if you want
 var rtc_configuration = {iceServers: [{urls: "stun:stun.services.mozilla.com"},
                                       {urls: "stun:stun.l.google.com:19302"}]};
-// The default constraints that will be attempted. Can be overriden by the user.
-var default_constraints = {video: true, audio: true};
 
 var connect_attempts = 0;
 var peer_connection;
@@ -79,7 +77,7 @@ function onIncomingSDP(sdp) {
             return;
         setStatus("Got SDP offer");
         peer_connection.createAnswer({
-            offerToReceiveAudio: true,
+            offerToReceiveAudio: false,
             offerToReceiveVideo: true
         })
             .then(onLocalDescription).catch(setError);
@@ -113,7 +111,6 @@ function setupVideoStatsInterval() {
                 if (stats) {
                     stats.forEach(stat => {
                         if (stat.type == "inbound-rtp") {
-                            console.log("Pushing stat", stat);
                             fetch("/stream/video-stats", {
                                 method: "POST",
                                 headers: {

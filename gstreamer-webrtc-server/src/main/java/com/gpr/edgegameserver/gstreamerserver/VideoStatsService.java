@@ -73,16 +73,17 @@ public class VideoStatsService {
     public void registerStats(Map<String, String> videoStats) {
         try {
             VideoStatsEntity videoStatsEntity = new VideoStatsEntity();
-            videoStatsEntity.setTimestamp(Long.valueOf(videoStats.get("timestamp")));
+            String timestamp = videoStats.get("timestamp");
+            videoStatsEntity.setTimestamp(timestamp.contains(".") ? Long.valueOf(timestamp.split("\\.")[0]): Long.valueOf(timestamp));
             videoStatsEntity.setJitter(Double.valueOf(videoStats.get("jitter")));
             videoStatsEntity.setPacketsLost(Long.valueOf(videoStats.get("packetsLost")));
             videoStatsEntity.setPacketsReceived(Long.valueOf(videoStats.get("packetsReceived")));
             videoStatsEntity.setBytesReceived(Long.valueOf(videoStats.get("bytesReceived")));
             videoStatsEntity.setHeaderBytesReceived(Long.valueOf(videoStats.get("headerBytesReceived")));
             videoStatsEntity.setFramesReceived(Long.valueOf(videoStats.get("framesReceived")));
-            videoStatsEntity.setFrameWidth(Long.valueOf(videoStats.get("frameWidth")));
-            videoStatsEntity.setFrameHeight(Long.valueOf(videoStats.get("frameHeight")));
-            videoStatsEntity.setFramesPerSecond(Long.valueOf(videoStats.get("framesPerSecond")));
+            videoStatsEntity.setFrameWidth(videoStats.get("frameWidth") == null ? null : Long.valueOf(videoStats.get("frameWidth")));
+            videoStatsEntity.setFrameHeight(videoStats.get("frameHeight") == null ? null : Long.valueOf(videoStats.get("frameHeight")));
+            videoStatsEntity.setFramesPerSecond(videoStats.get("framesPerSecond") == null ? null : Long.valueOf(videoStats.get("framesPerSecond")));
             videoStatsEntity.setFramesDropped(Long.valueOf(videoStats.get("framesDropped")));
             videoStatsEntity.setTotalDecodeTime(Double.valueOf(videoStats.get("totalDecodeTime")));
             videoStatsRepository.save(videoStatsEntity);
