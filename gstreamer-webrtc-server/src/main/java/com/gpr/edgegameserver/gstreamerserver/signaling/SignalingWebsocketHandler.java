@@ -68,6 +68,7 @@ public class SignalingWebsocketHandler implements WebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         logger.info("Websocket connection closed.");
+        Gst.quit();
     }
 
     @Override

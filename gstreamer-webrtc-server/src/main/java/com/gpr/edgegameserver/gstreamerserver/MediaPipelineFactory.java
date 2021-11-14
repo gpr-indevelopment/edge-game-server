@@ -8,10 +8,12 @@ import org.freedesktop.gstreamer.Pipeline;
 import org.freedesktop.gstreamer.elements.WebRTCBin;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PreDestroy;
+
 @Component
 public class MediaPipelineFactory {
 
-    private static final String VIDEO_BIN_DESCRIPTION = "dx9screencapsrc cursor=true ! videoconvert ! videorate ! video/x-raw,framerate=60/1 ! nvh264enc zerolatency=true ! rtph264pay ! queue ! capsfilter caps=application/x-rtp,media=video,encoding-name=H264,framerate=60/1,width=1920,height=1080,payload=97";
+    private static final String VIDEO_BIN_DESCRIPTION = "dxgiscreencapsrc cursor=true ! capsfilter caps=\"video/x-raw,framerate=60/1\" ! cudaupload ! cudaconvert ! capsfilter caps=\"video/x-raw(memory:CUDAMemory),format=I420\" ! nvh264enc bitrate=0 rc-mode=cbr gop-size=-1 qos=true preset=low-latency-hq ! capsfilter caps=\"video/x-h264,profile=high\" ! rtph264pay ! capsfilter caps=\"application/x-rtp,media=video,encoding-name=H264,payload=123\"";
 
     //private static final String AUDIO_BIN_DESCRIPTION = "audiotestsrc ! audioconvert ! audioresample ! queue ! opusenc ! rtpopuspay ! queue ! capsfilter caps=application/x-rtp,media=audio,encoding-name=OPUS,payload=96";
 
@@ -19,6 +21,11 @@ public class MediaPipelineFactory {
 
     public MediaPipelineFactory(SignalingWebSocketClient signalingWebSocketClient) {
         this.signalingWebSocketClient = signalingWebSocketClient;
+    }
+
+    @PreDestroy
+    public void destroyGst() {
+        Gst.quit();
     }
 
     public void buildPipeline(String peerId) {
