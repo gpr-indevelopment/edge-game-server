@@ -22,10 +22,9 @@ var connect_attempts = 0;
 var peer_connection;
 var send_channel;
 var ws_conn;
-
-function setConnectButtonState(value) {
-
-}
+var remoteTrack;
+var inputLagInterval;
+var videoStatsInterval;
 
 function wantRemoteOfferer() {
    return document.getElementById("remote-offerer").checked;
@@ -65,14 +64,6 @@ function setError(text) {
 }
 
 function resetVideo() {
-    // Release the webcam and mic
-    if (local_stream_promise)
-        local_stream_promise.then(stream => {
-            if (stream) {
-                stream.getTracks().forEach(function (track) { track.stop(); });
-            }
-        });
-
     // Reset the video element and stop showing the last received frame
     var videoElement = getVideoElement();
     videoElement.pause();
@@ -115,6 +106,51 @@ function onIncomingICE(ice) {
     peer_connection.addIceCandidate(candidate).catch(setError);
 }
 
+function setupVideoStatsInterval() {
+    videoStatsInterval = setInterval(function () {
+        if (peer_connection) {
+            peer_connection.getStats(remoteTrack).then(stats => {
+                if (stats) {
+                    stats.forEach(stat => {
+                        if (stat.type == "inbound-rtp") {
+                            console.log("Pushing stat", stat);
+                            fetch("/stream/video-stats", {
+                                method: "POST",
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(stat)
+                            }).catch(() => console.log("Unable to push video stats data"));
+                        }
+                    })
+                }
+            }, 500);
+        }
+    })
+}
+
+function setupInputLagInterval() {
+    inputLagInterval = setInterval(function() {
+        fetch("/stream/input-lag", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ sentTimestamp: new Date().getTime()})
+        }).catch(() => console.log("Unable to push input lag data."));
+    }, 2000);
+}
+
+function clearInputLagInterval() {
+    clearInterval(inputLagInterval);
+}
+
+function clearVideoStatsInterval() {
+    clearInterval(videoStatsInterval);
+}
+
 function onServerMessage(event) {
     console.log("Received " + event.data);
     switch (event.data) {
@@ -124,6 +160,8 @@ function onServerMessage(event) {
             fetch(`/stream/${peer_id}`, {
                 method: "POST"
             });
+            setupVideoStatsInterval();
+            setupInputLagInterval();
             return;
         case "SESSION_OK":
             setStatus("Starting negotiation");
@@ -176,12 +214,12 @@ function onServerMessage(event) {
 function onServerClose(event) {
     setStatus('Disconnected from server');
     resetVideo();
-
+    clearInputLagInterval();
+    clearVideoStatsInterval();
     if (peer_connection) {
         peer_connection.close();
         peer_connection = null;
     }
-
     // Reset after a second
     window.setTimeout(websocketServerConnect, 1000);
 }
@@ -220,7 +258,6 @@ function websocketServerConnect() {
         document.getElementById("peer-id").textContent = peer_id;
         ws_conn.send('HELLO ' + peer_id);
         setStatus("Registering with server");
-        setConnectButtonState("Connect");
     });
     ws_conn.addEventListener('error', onServerError);
     ws_conn.addEventListener('message', onServerMessage);
@@ -235,6 +272,7 @@ function onRemoteTrack(event) {
         console.log("Creating child button!");
         setupPlayVideoButton()
         video.srcObject = event.streams[0];
+        remoteTrack = event.track;
     }
 }
 
@@ -312,6 +350,4 @@ function createCall(msg) {
 
     if (msg != null)
         setStatus("Created peer connection for call, waiting for SDP");
-
-    setConnectButtonState("Disconnect");
 }

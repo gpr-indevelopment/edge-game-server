@@ -3,8 +3,10 @@ package com.gpr.edgegameserver.gstreamerserver;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="INPUT_LAG")
 public class InputLagEntity {
 
     @GeneratedValue

@@ -3,7 +3,6 @@ package com.gpr.edgegameserver.gstreamerserver;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.freedesktop.gstreamer.Bin;
 import org.freedesktop.gstreamer.Pipeline;
 import org.freedesktop.gstreamer.elements.WebRTCBin;
 import org.slf4j.Logger;
@@ -35,7 +34,6 @@ public class WebRtcCallbackManager {
     private void setupWebRtc() {
         this.webRTCBin.connect(onNegotiationNeeded);
         this.webRTCBin.connect(onIceCandidate);
-        this.webRTCBin.connect(elementAdded);
     }
 
     private WebRTCBin.ON_ICE_CANDIDATE onIceCandidate = (sdpMLineIndex, candidate) -> {
@@ -73,12 +71,5 @@ public class WebRtcCallbackManager {
     private WebRTCBin.ON_NEGOTIATION_NEEDED onNegotiationNeeded = elem -> {
         logger.info("onNegotiationNeeded: " + elem.getName());
         this.webRTCBin.createOffer(onOfferCreated);
-    };
-
-    private Bin.ELEMENT_ADDED elementAdded = (bin, elem) -> {
-        if (!this.webRTCBin.isPlaying()) {
-            this.webRTCBin.play();
-        }
-        System.out.println("element added! " + elem.getName() + bin.getName());
     };
 }
