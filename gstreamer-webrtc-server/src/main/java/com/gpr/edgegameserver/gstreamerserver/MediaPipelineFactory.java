@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MediaPipelineFactory {
 
-    private static final String VIDEO_BIN_DESCRIPTION = "dx9screencapsrc cursor=true ! videoconvert ! queue ! nvh264enc zerolatency=true ! rtph264pay ! queue ! capsfilter caps=application/x-rtp,media=video,encoding-name=H264,framerate=60/1,width=1920,height=1080,payload=97";
+    private static final String VIDEO_BIN_DESCRIPTION = "dx9screencapsrc cursor=true ! videoconvert ! videorate ! video/x-raw,framerate=60/1 ! nvh264enc zerolatency=true ! rtph264pay ! queue ! capsfilter caps=application/x-rtp,media=video,encoding-name=H264,framerate=60/1,width=1920,height=1080,payload=97";
 
     //private static final String AUDIO_BIN_DESCRIPTION = "audiotestsrc ! audioconvert ! audioresample ! queue ! opusenc ! rtpopuspay ! queue ! capsfilter caps=application/x-rtp,media=audio,encoding-name=OPUS,payload=96";
 
