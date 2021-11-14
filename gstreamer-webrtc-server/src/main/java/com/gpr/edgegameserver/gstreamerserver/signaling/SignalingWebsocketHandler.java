@@ -62,12 +62,12 @@ public class SignalingWebsocketHandler implements WebSocketHandler {
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        logger.info("handleTransportError");
+        logger.info("Some error occurred on transport");
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-        logger.info("afterConnectionClosed");
+        logger.info("Websocket connection closed.");
     }
 
     @Override

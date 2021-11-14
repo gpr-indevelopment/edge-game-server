@@ -22,8 +22,6 @@ var connect_attempts = 0;
 var peer_connection;
 var send_channel;
 var ws_conn;
-// Promise for local stream after constraints are approved by the user
-var local_stream_promise;
 
 function setConnectButtonState(value) {
 
@@ -31,22 +29,6 @@ function setConnectButtonState(value) {
 
 function wantRemoteOfferer() {
    return document.getElementById("remote-offerer").checked;
-}
-
-function onConnectClicked() {
-    if (document.getElementById("peer-connect-button").value == "Disconnect") {
-        resetState();
-        return;
-    }
-
-    var id = document.getElementById("peer-connect").value;
-    if (id == "") {
-        alert("Peer id must be filled out");
-        return;
-    }
-
-    ws_conn.send("SESSION " + id);
-    setConnectButtonState("Disconnect");
 }
 
 function getOurId() {
@@ -105,11 +87,11 @@ function onIncomingSDP(sdp) {
         if (sdp.type != "offer")
             return;
         setStatus("Got SDP offer");
-        local_stream_promise.then((stream) => {
-            setStatus("Got local stream, creating answer");
-            peer_connection.createAnswer()
+        peer_connection.createAnswer({
+            offerToReceiveAudio: true,
+            offerToReceiveVideo: true
+        })
             .then(onLocalDescription).catch(setError);
-        }).catch(setError);
     }).catch(setError);
 }
 
@@ -151,12 +133,14 @@ function onServerMessage(event) {
                 return;
             }
             if (!peer_connection)
-                createCall(null).then (generateOffer);
+                createCall(null);
+                generateOffer();
             return;
         case "OFFER_REQUEST":
             // The peer wants us to set up and then send an offer
             if (!peer_connection)
-                createCall(null).then (generateOffer);
+                createCall(null);
+                generateOffer();
             return;
         default:
             if (event.data.startsWith("ERROR")) {
@@ -208,15 +192,6 @@ function onServerError(event) {
     window.setTimeout(websocketServerConnect, 3000);
 }
 
-function getLocalStream() {
-    // Add local stream
-    if (navigator.mediaDevices.getUserMedia) {
-        return navigator.mediaDevices.getUserMedia({"video":false,"audio":true});
-    } else {
-        errorUserMediaHandler();
-    }
-}
-
 function websocketServerConnect() {
     connect_attempts++;
     if (connect_attempts > 3) {
@@ -254,14 +229,21 @@ function websocketServerConnect() {
 
 function onRemoteTrack(event) {
     if (getVideoElement().srcObject !== event.streams[0]) {
-        console.log('Incoming stream');
+        console.log('Incoming stream. Streams length: ' + event.streams.length);
+        console.log(event.streams[0]);
         let video = getVideoElement();
+        console.log("Creating child button!");
+        setupPlayVideoButton()
         video.srcObject = event.streams[0];
     }
 }
 
-function errorUserMediaHandler() {
-    setError("Browser doesn't support getUserMedia!");
+function setupPlayVideoButton() {
+    let videoButton = document.getElementById("playVideo");
+    videoButton.addEventListener("click", () => {
+        getVideoElement().play();
+    });
+    return videoButton;
 }
 
 const handleDataChannelOpen = (event) =>{
@@ -313,12 +295,6 @@ function createCall(msg) {
     send_channel.onclose = handleDataChannelClose;
     peer_connection.ondatachannel = onDataChannel;
     peer_connection.ontrack = onRemoteTrack;
-    /* Send our video/audio to the other peer */
-    local_stream_promise = getLocalStream().then((stream) => {
-        console.log('Adding local stream');
-        peer_connection.addStream(stream);
-        return stream;
-    }).catch(setError);
 
     if (msg != null && !msg.sdp) {
         console.log("WARNING: First message wasn't an SDP message!?");
@@ -338,5 +314,4 @@ function createCall(msg) {
         setStatus("Created peer connection for call, waiting for SDP");
 
     setConnectButtonState("Disconnect");
-    return local_stream_promise;
 }

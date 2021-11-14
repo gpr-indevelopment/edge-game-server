@@ -3,6 +3,7 @@ package com.gpr.edgegameserver.gstreamerserver;
 import com.gpr.edgegameserver.gstreamerserver.signaling.SignalingWebSocketClient;
 import org.freedesktop.gstreamer.Bin;
 import org.freedesktop.gstreamer.Gst;
+import org.freedesktop.gstreamer.GstObject;
 import org.freedesktop.gstreamer.Pipeline;
 import org.freedesktop.gstreamer.elements.WebRTCBin;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,14 @@ public class MediaPipelineFactory {
         pipeline.addMany(webRTCBin, video, audio);
         video.link(webRTCBin);
         audio.link(webRTCBin);
+        setMediaDirection(webRTCBin);
         signalingWebSocketClient.startWebSocketConnection(peerId, pipeline, webRTCBin);
+    }
+
+    private void setMediaDirection(WebRTCBin webRTCBin) {
+        GstObject videoTransceiver = webRTCBin.emit(GstObject.class, "get-transceiver", 0);
+        videoTransceiver.set("direction", 2);
+        GstObject audioTransceiver = webRTCBin.emit(GstObject.class, "get-transceiver", 1);
+        audioTransceiver.set("direction", 2);
     }
 }
