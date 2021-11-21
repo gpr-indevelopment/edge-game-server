@@ -24,6 +24,9 @@ var remoteTrack;
 var inputLagInterval;
 var videoStatsInterval;
 
+var sock;
+var stompClient;
+
 function wantRemoteOfferer() {
    return document.getElementById("remote-offerer").checked;
 }
@@ -128,15 +131,11 @@ function setupVideoStatsInterval() {
 }
 
 function setupInputLagInterval() {
+    sock = new SockJS(`/web-socket`);
+    stompClient = Stomp.over(sock);
+    stompClient.connect({}, (frame) => console.log("Input lag websocket connected", frame));
     inputLagInterval = setInterval(function() {
-        fetch("/stream/input-lag", {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ sentTimestamp: new Date().getTime()})
-        }).catch(() => console.log("Unable to push input lag data."));
+        stompClient.send("/server/input-lag", {}, JSON.stringify({ sentTimestamp: new Date().getTime()}));
     }, 2000);
 }
 

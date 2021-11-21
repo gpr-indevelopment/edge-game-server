@@ -16,24 +16,16 @@ public class StreamerRestController {
 
     private final MediaPipelineFactory mediaPipelineFactory;
 
-    private final InputLagService inputLagService;
-
     private final VideoStatsService videoStatsService;
 
-    public StreamerRestController(MediaPipelineFactory mediaPipelineFactory, InputLagService inputLagService, VideoStatsService videoStatsService) {
+    public StreamerRestController(MediaPipelineFactory mediaPipelineFactory, VideoStatsService videoStatsService) {
         this.mediaPipelineFactory = mediaPipelineFactory;
-        this.inputLagService = inputLagService;
         this.videoStatsService = videoStatsService;
     }
 
     @PostMapping("/{peerId}")
     public void startStream(@PathVariable String peerId) {
         mediaPipelineFactory.buildPipeline(peerId);
-    }
-
-    @PostMapping("/input-lag")
-    public void registerInputLag(@RequestBody Map<String, Object> payload) {
-        inputLagService.register((Long) payload.get("sentTimestamp"));
     }
 
     @PostMapping("/video-stats")
