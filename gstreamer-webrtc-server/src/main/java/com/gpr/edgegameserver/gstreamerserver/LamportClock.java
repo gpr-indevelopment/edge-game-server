@@ -16,7 +16,7 @@ public class LamportClock {
         }
     }
 
-    private static Long nowWithReference() {
+    public static Long nowWithReference() {
         return System.currentTimeMillis() + referenceDeltaTime;
     }
 

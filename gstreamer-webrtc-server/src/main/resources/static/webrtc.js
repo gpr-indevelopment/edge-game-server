@@ -26,6 +26,8 @@ var videoStatsInterval;
 
 var sock;
 var stompClient;
+var serverTimestampDelta = 0;
+var logicalClockCount = 0;
 
 function wantRemoteOfferer() {
    return document.getElementById("remote-offerer").checked;
@@ -130,13 +132,36 @@ function setupVideoStatsInterval() {
     })
 }
 
+function getCurrentRemoteAddress() {
+    try {
+        let iceTransport = peer_connection.getSenders()[0].transport.iceTransport;
+        console.log("ICE TRANSPORT:", iceTransport);
+        return iceTransport.getSelectedCandidatePair();
+    } catch (e) {
+
+    }
+}
+
 function setupInputLagInterval() {
     sock = new SockJS(`/web-socket`);
     stompClient = Stomp.over(sock);
-    stompClient.connect({}, (frame) => console.log("Input lag websocket connected", frame));
-    inputLagInterval = setInterval(function() {
-        stompClient.send("/server/input-lag", {}, JSON.stringify({ sentTimestamp: new Date().getTime()}));
-    }, 2000);
+    stompClient.connect({}, (frame) => {
+        console.log("Input lag websocket connected", frame);
+        stompClient.subscribe('/topic/message', (message) => {
+            let localServerTimestamp = Number.parseInt(JSON.parse(message.body).payload);
+            let currentTimestamp = new Date().getTime();
+            if (localServerTimestamp > currentTimestamp) {
+                console.log("Adjusting Lamport logical clock.")
+                logicalClockCount++;
+                document.getElementById("logical-clock-count").textContent = logicalClockCount;
+                serverTimestampDelta = 1 + localServerTimestamp - currentTimestamp;
+            }
+            setTimeout(function() {
+                stompClient.send("/server/input-lag", {}, JSON.stringify({ sentTimestamp: new Date().getTime() + serverTimestampDelta}));
+            }, 1000);
+        });
+        stompClient.send("/server/input-lag", {}, JSON.stringify({ sentTimestamp: new Date().getTime() + serverTimestampDelta}));
+    });
 }
 
 function clearInputLagInterval() {
