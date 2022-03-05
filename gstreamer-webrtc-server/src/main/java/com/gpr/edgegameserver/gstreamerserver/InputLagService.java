@@ -41,6 +41,6 @@ public class InputLagService {
 
     public void register(Long sentTimestamp) {
         InputLagEntity savedEntity = inputLagRepository.save(new InputLagEntity(sentTimestamp, LamportClock.now(sentTimestamp)));
-        logger.info("Registered InputLag with delta: {} ms", savedEntity.getDelta());
+        logger.debug("Registered InputLag with delta: {} ms", savedEntity.getDelta());
     }
 }

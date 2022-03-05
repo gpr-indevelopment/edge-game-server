@@ -4,10 +4,6 @@
 	<modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
-        <module>lwjgl</module>
-        <module>cling</module>
-		<module>video-streamer</module>
-		<module>web</module>
         <module>gstreamer-webrtc-server</module>
     </modules>
     <parent>
