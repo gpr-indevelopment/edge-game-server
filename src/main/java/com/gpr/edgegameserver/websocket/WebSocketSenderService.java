@@ -1,4 +1,4 @@
-package com.gpr.edgegameserver.gstreamerserver.websocket;
+package com.gpr.edgegameserver.websocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

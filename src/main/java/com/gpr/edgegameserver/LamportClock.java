@@ -1,4 +1,4 @@
-package com.gpr.edgegameserver.gstreamerserver;
+package com.gpr.edgegameserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

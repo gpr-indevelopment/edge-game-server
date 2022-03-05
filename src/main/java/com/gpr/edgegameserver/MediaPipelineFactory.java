@@ -1,6 +1,6 @@
-package com.gpr.edgegameserver.gstreamerserver;
+package com.gpr.edgegameserver;
 
-import com.gpr.edgegameserver.gstreamerserver.signaling.SignalingWebSocketClient;
+import com.gpr.edgegameserver.signaling.SignalingWebSocketClient;
 import org.freedesktop.gstreamer.Bin;
 import org.freedesktop.gstreamer.Gst;
 import org.freedesktop.gstreamer.GstObject;

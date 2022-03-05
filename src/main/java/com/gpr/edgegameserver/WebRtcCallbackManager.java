@@ -1,4 +1,4 @@
-package com.gpr.edgegameserver.gstreamerserver;
+package com.gpr.edgegameserver;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

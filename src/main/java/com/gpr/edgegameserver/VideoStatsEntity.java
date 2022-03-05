@@ -1,4 +1,4 @@
-package com.gpr.edgegameserver.gstreamerserver;
+package com.gpr.edgegameserver;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -1,6 +1,6 @@
-package com.gpr.edgegameserver.gstreamerserver.signaling;
+package com.gpr.edgegameserver.signaling;
 
-import com.gpr.edgegameserver.gstreamerserver.WebRtcCallbackManager;
+import com.gpr.edgegameserver.WebRtcCallbackManager;
 import org.freedesktop.gstreamer.Pipeline;
 import org.freedesktop.gstreamer.elements.WebRTCBin;
 import org.springframework.stereotype.Component;

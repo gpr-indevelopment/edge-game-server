@@ -1,8 +1,8 @@
-package com.gpr.edgegameserver.gstreamerserver.signaling;
+package com.gpr.edgegameserver.signaling;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gpr.edgegameserver.gstreamerserver.WebRtcCallbackManager;
+import com.gpr.edgegameserver.WebRtcCallbackManager;
 import org.freedesktop.gstreamer.Gst;
 import org.freedesktop.gstreamer.Pipeline;
 import org.freedesktop.gstreamer.SDPMessage;
