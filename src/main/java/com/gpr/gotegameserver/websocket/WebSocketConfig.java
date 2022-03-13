@@ -1,4 +1,4 @@
-package com.gpr.edgegameserver.websocket;
+package com.gpr.gotegameserver.websocket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

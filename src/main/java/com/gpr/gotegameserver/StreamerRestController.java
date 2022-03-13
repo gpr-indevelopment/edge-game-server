@@ -1,4 +1,4 @@
-package com.gpr.edgegameserver;
+package com.gpr.gotegameserver;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.gpr</groupId>
-    <artifactId>edge-game-server</artifactId>
+    <artifactId>gote-game-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>

@@ -1,4 +1,4 @@
-package com.gpr.edgegameserver;
+package com.gpr.gotegameserver;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

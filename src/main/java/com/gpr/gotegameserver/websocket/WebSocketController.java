@@ -1,7 +1,7 @@
-package com.gpr.edgegameserver.websocket;
+package com.gpr.gotegameserver.websocket;
 
-import com.gpr.edgegameserver.LamportClock;
-import com.gpr.edgegameserver.InputLagService;
+import com.gpr.gotegameserver.LamportClock;
+import com.gpr.gotegameserver.InputLagService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
